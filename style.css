@@ -353,6 +353,44 @@ section {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Banner Tất Cả Dịch Vụ Section */
+.services-banner {
+  background-image: url("img/banner-tamnhin.png"); /* Sử dụng cùng ảnh nền với vision hoặc thay bằng ảnh khác */
+  background-size: cover;
+  background-position: center;
+  height: 220px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+/* Green overlay cho services banner */
+.services-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(126, 188, 89, 0.7); /* Green transparent overlay */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.services-title {
+  font-size: 42px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
 /* Vision & Mission Content Section */
 .vision-content-section {
   padding: 70px 0;
@@ -600,8 +638,7 @@ section {
 
 /* Hover effects for service cards - Đã bỏ hiệu ứng hiện arrow */
 .service-card:hover .service-img-container {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.1);
+  /* transform: scale(1.1); */
 }
 
 .service-card:hover .service-title {
@@ -609,155 +646,216 @@ section {
   color: #000;
 }
 
-/* Banner Tất Cả Dịch Vụ Section */
-.services-banner {
-  background-image: url("img/banner-tamnhin.png"); /* Sử dụng lại hình ảnh từ banner tầm nhìn */
-  background-size: cover;
-  background-position: center;
-  height: 220px;
-  width: 100%;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin: 0;
-}
-
-/* Green overlay cho services banner */
-.services-banner::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(
-    126,
-    188,
-    89,
-    0.7
-  ); /* Màu xanh giống banner tầm nhìn */
-  z-index: 1;
-}
-
-.services-overlay {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-}
-
-.services-title {
-  font-size: 42px;
-  font-weight: bold;
-  color: #fff;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Responsive cho services banner */
-@media screen and (max-width: 768px) {
-  .services-banner {
-    height: 180px;
-  }
-
-  .services-title {
-    font-size: 36px;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .services-banner {
-    height: 150px;
-  }
-
-  .services-title {
-    font-size: 28px;
-  }
-}
-
-/* All Services Section */
-.all-services {
-  padding: 70px 0;
-  background-color: #fff;
-}
-
-.services-grid {
-  display: flex;
-  justify-content: center;
-  gap: 40px;
-  flex-wrap: wrap;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Service card styling với opacity 0.5 ở trạng thái mặc định */
+/* Hiệu ứng hover cho card */
 .service-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 0 1 calc(25% - 30px);
-  min-width: 230px;
-  text-align: center;
-  opacity: 0.5; /* Độ mờ 0.5 khi chưa hover */
-  transition: all 0.3s ease, opacity 0.4s ease-in-out, transform 0.3s ease;
-  position: relative;
-  cursor: pointer;
-}
-
-/* Khi hover, opacity tăng lên 1 */
-.service-card:hover {
-  opacity: 1;
-  transition: opacity 0.4s ease-in-out;
-}
-
-/* Có thể thêm hiệu ứng filter để tăng cường hiệu ứng mờ */
-.service-img-container {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-10px); /* Di chuyển card lên trên một chút khi hover */
+}
+
+.service-card.hover-card {
+  transform: translateY(-10px);
+}
+
+/* Hiệu ứng zoom ảnh khi hover */
+.service-img-container {
+  overflow: hidden;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+/* Đảm bảo 4 card ẩn không hiển thị ban đầu */
+.service-card.hidden-card {
+  opacity: 0.5; /* Giữ mờ cho các card ẩn */
+}
+
+/* Khi active thì hiển thị rõ nét */
+.service-card.active-card {
+  opacity: 1;
+}
+
+.service-card:hover .service-img-container {
+  /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);  */
 }
 
 .service-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
   transition: transform 0.5s ease;
-  filter: grayscale(
-    20%
-  ); /* Thêm một chút hiệu ứng xám cho ảnh khi chưa hover */
 }
 
 .service-card:hover .service-img {
-  filter: grayscale(0%); /* Khôi phục màu sắc đầy đủ khi hover */
+  transform: scale(1.1);
 }
 
-/* Service title styling */
-.service-title {
-  font-size: 18px;
-  font-weight: 500; /* Font mỏng hơn khi chưa hover */
-  color: #333;
-  margin: 0;
-  padding: 0;
-  line-height: 1.2;
+/* Loại bỏ các định nghĩa trùng lặp và cập nhật CSS cho services-grid */
+.services-grid-wrapper {
+  position: relative;
+  overflow: hidden; /* Giới hạn vùng hiển thị */
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+/* Thiết lập cho all-services section */
+.all-services {
+  position: relative;
+  padding: 0 90px; /* Tăng padding từ 80px lên 90px */
+}
+
+/* Thiết lập services-grid để chỉ hiển thị 4 item đầu */
+.services-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 30px;
+  transition: transform 0.5s ease;
+  cursor: grab;
+  width: auto;
+}
+
+/* Xác định chiều rộng cố định cho mỗi card */
+.service-card {
+  flex: 0 0 calc(25% - 23px); /* Chiếm 1/4 container trừ đi gap */
+  min-width: 230px;
+  max-width: calc(25% - 23px);
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+}
+
+/* Đặt overflow cho container để tạo hiệu ứng cắt xén (clipping) */
+.all-services .container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* Hiện thị rõ 4 card đầu tiên */
+.service-card:nth-child(-n + 4) {
+  opacity: 1;
+}
+
+/* Ẩn hoàn toàn các card từ vị trí thứ 5 trở đi */
+.service-card:nth-child(n + 5) {
+  opacity: 0.5;
+}
+
+/* Đặt các nút arrow ở ngoài rìa, cách xa hơn */
+.nav-arrow {
+  background-color: #59b239;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 22px;
+  font-weight: bold;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* Điều chỉnh services-grid-wrapper để giới hạn hiển thị chỉ 4 items đầu tiên */
+.services-grid-wrapper {
+  position: relative;
+  overflow: hidden; /* Quan trọng: giữ overflow hidden để ẩn các phần tử ngoài vùng nhìn */
+  padding: 20px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Đảm bảo container có đủ width cho 4 card */
+.all-services .container {
+  position: relative;
+  width: 100%;
+}
+
+/* Thiết lập services-grid để hiển thị chính xác 4 card đầu */
+.services-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 30px;
+  transition: transform 0.5s ease;
+  cursor: grab;
+  width: auto; /* Cho phép grid mở rộng theo chiều ngang */
+  padding: 20px 0;
+}
+
+/* Card styling - điều chỉnh để vừa hiển thị 4 card */
+.service-card {
+  flex: 0 0 calc(25% - 30px); /* Chiếm 1/4 không gian với gap */
+  min-width: 230px;
+  text-align: center;
+  opacity: 0.5; /* Độ mờ khi chưa active */
   transition: all 0.3s ease;
   position: relative;
 }
 
-/* Hover effects for service cards */
-.service-card:hover .service-img-container {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.1);
+/* Hiển thị rõ nét các thẻ đang trong viewport */
+.service-card.active-card {
+  opacity: 1;
 }
 
-.service-card:hover .service-title {
-  font-weight: 700; /* Font đậm khi hover */
-  color: #000;
+/* Đặt mũi tên ở hai bên rìa */
+.nav-arrow {
+  background-color: #59b239;
+  color: white;
+  border: none;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10; /* Đảm bảo nằm trên các phần tử khác */
+}
+
+.nav-prev {
+  left: 0; /* Đặt nút bên trái sát rìa section */
+}
+
+.nav-next {
+  right: 0; /* Đặt nút bên phải sát rìa section */
+}
+
+/* Thêm lại services-drag-handle để kéo thả */
+.services-drag-handle {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(89, 178, 57, 0.1);
+  border-radius: 10px 0 0 10px;
+  padding: 15px 5px;
+  flex-direction: column;
+  align-items: center;
+  cursor: e-resize;
+  transition: all 0.3s ease;
+  z-index: 4;
+}
+
+.drag-line {
+  width: 3px;
+  height: 60px;
+  background-color: #59b239;
+  border-radius: 3px;
 }
 
 /* Spa Environment Section */
@@ -768,6 +866,7 @@ section {
   overflow: hidden; /* Để đảm bảo các vật thể không tràn ra ngoài */
 }
 
+/* Điều chỉnh container cho falling objects để phủ toàn bộ section */
 .falling-objects-container {
   position: absolute;
   width: 100%;
@@ -776,31 +875,33 @@ section {
   left: 0;
   pointer-events: none; /* Đảm bảo không cản trở tương tác với nội dung */
   z-index: 1;
+  overflow: hidden; /* Đảm bảo lá không tràn ra ngoài section */
 }
 
+/* Cải thiện animation lá rơi */
 .falling-object {
   position: absolute;
-  background-color: rgba(126, 188, 89, 0.3); /* Màu xanh lá mờ */
+  background-color: rgba(126, 188, 89, 0.2);
   border-radius: 50%;
   opacity: 0.7;
   animation: fallingAnimation linear infinite;
-  z-index: -1;
-  filter: blur(0.5px);
+  z-index: 1; /* Tăng z-index để hiển thị trên nền nhưng dưới nội dung */
 }
 
+/* Đảm bảo lá rơi trên toàn bộ chiều rộng của section */
 .falling-object.leaf {
   background-color: transparent;
   border-radius: 0;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2359b239' opacity='0.4'%3E%3Cpath d='M17,8C8,10,5.9,16.17,3.82,21.34L5.71,22l1-2.3A4.49,4.49,0,0,0,8,20a4,4,0,0,0,4-4,4,4,0,0,0-4-4c-.73,0-1.41.2-2,.54L7.58,9.76C10.09,7.2,12.08,6,17,8Z'/%3E%3C/svg%3E");
+  background-image: url("img/leaf.png");
   background-size: contain;
   background-repeat: no-repeat;
   opacity: 0.8;
-  filter: none;
 }
 
+/* Điều chỉnh animation để lá rơi từ trên đầu section */
 @keyframes fallingAnimation {
   0% {
-    transform: translateY(0) rotate(0deg) scale(1);
+    transform: translateY(-50px) rotate(0deg) scale(1);
     opacity: 0;
   }
   10% {
@@ -810,50 +911,8 @@ section {
     opacity: 0.8;
   }
   100% {
-    transform: translateY(1000%) rotate(360deg) scale(0.8);
+    transform: translateY(1200px) rotate(360deg) scale(0.8);
     opacity: 0;
-  }
-}
-
-/* Đảm bảo nội dung chính hiển thị trên các vật thể rơi */
-.spa-environment .container {
-  position: relative;
-  z-index: 2;
-}
-
-.falling-objects-container {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: -10%;
-  left: 0;
-  pointer-events: none; /* Đảm bảo không cản trở tương tác với nội dung */
-  z-index: 1;
-}
-
-.falling-object {
-  position: absolute;
-  background-color: rgba(126, 188, 89, 0.2); /* Màu xanh lá mờ */
-  border-radius: 50%;
-  opacity: 0.7;
-  animation: fallingAnimation linear infinite;
-  z-index: -1;
-}
-
-.falling-object.leaf {
-  background-color: transparent;
-  border-radius: 0;
-  background-image: url("img/leaf.png"); /* Tạo file hình lá nếu muốn dùng */
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-
-@keyframes fallingAnimation {
-  0% {
-    transform: translateY(-10%) rotate(0deg);
-  }
-  100% {
-    transform: translateY(1000%) rotate(360deg);
   }
 }
 
@@ -1348,43 +1407,4 @@ section {
   .footer-connect {
     max-width: 100%;
   }
-}
-
-/* Thêm vào cuối file style.css */
-
-/* Navigation arrows for services - Sử dụng CSS arrow thay vì ảnh */
-.services-navigation {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 40px;
-  max-width: 200px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.nav-arrow {
-  background-color: #59b239;
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  font-size: 22px; /* Kích thước chữ lớn hơn cho mũi tên Unicode */
-  font-weight: bold;
-  line-height: 1;
-}
-
-.nav-arrow:hover {
-  background-color: #4a9830;
-  transform: scale(1.1);
-}
-
-.nav-arrow:focus {
-  outline: none;
 }
