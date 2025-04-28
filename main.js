@@ -111,79 +111,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Lấy tất cả service cards
-  const prevButton = document.querySelector(".nav-prev");
-  const nextButton = document.querySelector(".nav-next");
-
-  // Biến theo dõi thẻ đang được hover
-  let currentIndex = -1;
-
-  // Hàm reset tất cả cards về trạng thái ban đầu
-  function resetAllCards() {
-    serviceCards.forEach((card) => {
-      card.style.opacity = "0.5";
-      card.classList.remove("active-card");
-    });
-  }
-
-  // Hàm active card theo index
-  function activateCard(index) {
-    resetAllCards();
-    if (index >= 0 && index < serviceCards.length) {
-      serviceCards[index].style.opacity = "1";
-      serviceCards[index].classList.add("active-card");
-      currentIndex = index;
-    }
-  }
-
-  // Xử lý sự kiện cho nút previous
-  prevButton.addEventListener("click", function () {
-    let nextIndex;
-    if (currentIndex <= 0) {
-      nextIndex = serviceCards.length - 1; // Quay lại card cuối cùng
-    } else {
-      nextIndex = currentIndex - 1; // Di chuyển đến card trước đó
-    }
-    activateCard(nextIndex);
-  });
-
-  // Xử lý sự kiện cho nút next
-  nextButton.addEventListener("click", function () {
-    let nextIndex;
-    if (currentIndex >= serviceCards.length - 1 || currentIndex == -1) {
-      nextIndex = 0; // Quay lại card đầu tiên
-    } else {
-      nextIndex = currentIndex + 1; // Di chuyển đến card tiếp theo
-    }
-    activateCard(nextIndex);
-  });
-
-  // Thêm sự kiện hover cho service cards
-  serviceCards.forEach((card, index) => {
-    card.addEventListener("mouseenter", function () {
-      activateCard(index);
-    });
-
-    // Khi click vào card
-    card.addEventListener("click", function () {
-      activateCard(index);
-      // Thêm xử lý click khác nếu cần
-    });
-  });
-
-  // Khi mouseleave khỏi vùng chứa services-grid
-  document
-    .querySelector(".services-grid")
-    .addEventListener("mouseleave", function () {
-      // Giữ lại trạng thái active của card hiện tại (không reset)
-      // Nếu muốn reset tất cả, bỏ comment dòng dưới
-      // resetAllCards();
-      // currentIndex = -1;
-    });
-
-  // Kích hoạt card đầu tiên khi trang tải xong
-  activateCard(0);
-
   // Tạo hiệu ứng vật rơi cho spa-environment
   createFallingObjects();
 
@@ -244,6 +171,177 @@ document.addEventListener("DOMContentLoaded", function () {
       container.appendChild(object);
     }
   }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const servicesGrid = document.querySelector(".services-grid");
+  const serviceCards = document.querySelectorAll(".service-card");
+  const prevButton = document.querySelector(".nav-prev");
+  const nextButton = document.querySelector(".nav-next");
+
+  // Biến theo dõi
+  let isDragging = false;
+  let startPosition = 0;
+  let currentTranslate = 0;
+  let previousTranslate = 0;
+  let currentIndex = 0;
+  let cardWidth = 0;
+
+  // Tính toán cardWidth
+  function calculateCardWidth() {
+    if (serviceCards.length > 0) {
+      // Lấy chiều rộng thực tế của card + gap
+      const firstCardRect = serviceCards[0].getBoundingClientRect();
+      const secondCardRect = serviceCards[1]
+        ? serviceCards[1].getBoundingClientRect()
+        : null;
+
+      if (secondCardRect) {
+        // Khoảng cách giữa card thứ nhất và thứ hai
+        cardWidth = secondCardRect.left - firstCardRect.left;
+      } else {
+        // Nếu chỉ có một card
+        cardWidth = firstCardRect.width;
+      }
+    }
+  }
+
+  // Khởi tạo
+  calculateCardWidth();
+  window.addEventListener("resize", calculateCardWidth);
+
+  // Số lượng card hiển thị cùng lúc (mặc định là 4)
+  function getVisibleCardCount() {
+    return 4; // Luôn hiển thị 4 card
+  }
+
+  // Xử lý sự kiện kéo thả
+  function dragStart(event) {
+    event.preventDefault();
+
+    if (event.type === "touchstart") {
+      startPosition = event.touches[0].clientX;
+    } else {
+      startPosition = event.clientX;
+    }
+
+    isDragging = true;
+    servicesGrid.style.transition = "none"; // Tắt transition khi kéo
+    servicesGrid.style.cursor = "grabbing";
+  }
+
+  function dragMove(event) {
+    if (!isDragging) return;
+
+    let currentPosition;
+    if (event.type === "touchmove") {
+      currentPosition = event.touches[0].clientX;
+    } else {
+      currentPosition = event.clientX;
+    }
+
+    const diff = currentPosition - startPosition;
+    currentTranslate = previousTranslate + diff;
+
+    // Giới hạn kéo
+    const maxTranslate = 0;
+    const minTranslate =
+      -cardWidth * (serviceCards.length - getVisibleCardCount());
+
+    if (currentTranslate > maxTranslate) {
+      currentTranslate = maxTranslate;
+    } else if (currentTranslate < minTranslate) {
+      currentTranslate = minTranslate;
+    }
+
+    // Áp dụng transform
+    servicesGrid.style.transform = `translateX(${currentTranslate}px)`;
+  }
+
+  function dragEnd() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    servicesGrid.style.cursor = "grab";
+    servicesGrid.style.transition = "transform 0.3s ease"; // Bật lại transition
+
+    // Snap vào card gần nhất
+    const snapThreshold = cardWidth / 4; // Ngưỡng snap
+    const draggedDistance = currentTranslate - previousTranslate;
+
+    if (Math.abs(draggedDistance) > snapThreshold) {
+      if (draggedDistance > 0) {
+        // Kéo sang phải
+        currentIndex = Math.max(0, currentIndex - 1);
+      } else {
+        // Kéo sang trái
+        currentIndex = Math.min(
+          serviceCards.length - getVisibleCardCount(),
+          currentIndex + 1
+        );
+      }
+    }
+
+    // Cập nhật vị trí
+    moveToIndex(currentIndex);
+    previousTranslate = -cardWidth * currentIndex;
+  }
+
+  function moveToIndex(index) {
+    currentIndex = index;
+    const translateX = -cardWidth * currentIndex;
+    servicesGrid.style.transition = "transform 0.3s ease";
+    servicesGrid.style.transform = `translateX(${translateX}px)`;
+    updateActiveCards();
+  }
+
+  function updateActiveCards() {
+    const visibleCount = getVisibleCardCount();
+
+    serviceCards.forEach((card, index) => {
+      if (index >= currentIndex && index < currentIndex + visibleCount) {
+        card.classList.add("active-card");
+        card.style.opacity = "1";
+      } else {
+        card.classList.remove("active-card");
+        card.style.opacity = "0.5";
+      }
+    });
+
+    // Cập nhật trạng thái nút
+    prevButton.classList.toggle("disabled", currentIndex <= 0);
+    nextButton.classList.toggle(
+      "disabled",
+      currentIndex >= serviceCards.length - visibleCount
+    );
+  }
+
+  // Event listeners cho kéo thả
+  servicesGrid.addEventListener("mousedown", dragStart);
+  servicesGrid.addEventListener("touchstart", dragStart);
+
+  window.addEventListener("mousemove", dragMove);
+  window.addEventListener("touchmove", dragMove);
+
+  window.addEventListener("mouseup", dragEnd);
+  window.addEventListener("touchend", dragEnd);
+  window.addEventListener("mouseleave", dragEnd);
+
+  // Event listeners cho các nút điều hướng
+  prevButton.addEventListener("click", () => {
+    if (currentIndex <= 0) return;
+    currentIndex--;
+    moveToIndex(currentIndex);
+  });
+
+  nextButton.addEventListener("click", () => {
+    if (currentIndex >= serviceCards.length - getVisibleCardCount()) return;
+    currentIndex++;
+    moveToIndex(currentIndex);
+  });
+
+  // Khởi tạo trạng thái active card
+  updateActiveCards();
 });
 
 // Thêm vào file main.js hoặc thay thế phần counter hiện tại
@@ -329,3 +427,50 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// Thêm vào file main.js
+document.addEventListener("DOMContentLoaded", function () {
+  createFallingObjects();
+});
+
+// Hàm tạo nhiều đối tượng rơi hơn phân bố khắp section
+function createFallingObjects() {
+  const container = document.querySelector(".falling-objects-container");
+  if (!container) return;
+
+  // Số lượng đối tượng rơi (tăng số lượng để phủ đều section)
+  const objectCount = 30; // Tăng số lượng từ 20 lên 30
+
+  // Tính toán chiều rộng của container
+  const containerWidth = container.offsetWidth;
+
+  // Tạo các đối tượng rơi
+  for (let i = 0; i < objectCount; i++) {
+    // Quyết định loại đối tượng (lá hoặc hình tròn)
+    const isLeaf = Math.random() > 0.3; // 70% là lá
+
+    // Tạo element mới
+    const object = document.createElement("div");
+    object.className = isLeaf ? "falling-object leaf" : "falling-object";
+
+    // Thiết lập vị trí và kích thước ngẫu nhiên
+    const size = isLeaf ? Math.random() * 20 + 15 : Math.random() * 15 + 5;
+    const xPos = Math.random() * containerWidth;
+
+    // Thiết lập style
+    object.style.width = `${size}px`;
+    object.style.height = `${size}px`;
+    object.style.left = `${xPos}px`;
+
+    // Thiết lập thời gian animation ngẫu nhiên (5-15 giây)
+    const duration = Math.random() * 10 + 5;
+    object.style.animationDuration = `${duration}s`;
+
+    // Tạo độ trễ ngẫu nhiên để các đối tượng không xuất hiện cùng lúc
+    const delay = Math.random() * 15;
+    object.style.animationDelay = `${delay}s`;
+
+    // Thêm vào container
+    container.appendChild(object);
+  }
+}
