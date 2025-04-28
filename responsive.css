@@ -599,3 +599,21 @@
     font-size: 12px;
   }
 }
+
+@media screen and (max-width: 1200px) {
+  .service-card {
+    width: calc(33.33% - 26.67px);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .service-card {
+    width: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .service-card {
+    width: calc(100% - 0px);
+  }
+}
